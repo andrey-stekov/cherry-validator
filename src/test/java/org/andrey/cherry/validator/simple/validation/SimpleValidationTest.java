@@ -8,6 +8,8 @@ import org.andrey.cherry.validator.simple.validation.rules.BLtOrEqSeven;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashSet;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -54,7 +56,7 @@ public class SimpleValidationTest {
     public void testALessThenZeroAndBGreatThenSeven() {
         Validator<TestBean> validator = new Validator<>(rules, new TestBean(-1, 9));
         assertFalse(validator.validate());
-        assertThat(validator.errors(), is(asList(ERROR_A_LT_0, ERROR_B_GT_7)));
+        assertThat(new HashSet<>(validator.errors()), is(new HashSet<>(asList(ERROR_A_LT_0, ERROR_B_GT_7))));
     }
 
     @Test

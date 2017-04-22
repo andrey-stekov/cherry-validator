@@ -3,6 +3,11 @@ package org.andrey.cherry.validator;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Validator engine
+ *
+ * @param <T> Class that will be validated
+ */
 public class Validator<T> {
     private Queue<IRule<T>> rulesQueue = new LinkedList<>();
     private Set<String> drivers = new HashSet<>();
@@ -10,7 +15,19 @@ public class Validator<T> {
     private volatile List<String> errors;
     private final T obj;
 
+    /**
+     * Validator engine constructor
+     *
+     * @param rules Validation rules bean
+     * @param obj validation target
+     *
+     * @throws IllegalArgumentException if rules is null
+     */
     public Validator(ValidationRules<T> rules, T obj) {
+        if (rules == null) {
+            throw new IllegalArgumentException("Validation rules can't be null.");
+        }
+
         this.rules = new HashSet<>(rules.getRules());
         this.obj = obj;
     }
@@ -35,7 +52,7 @@ public class Validator<T> {
                 if (rule.getPredicate().test(obj)) {
                     drivers.add(rule.getName());
                 } else {
-                    errors.add(rule.getError().renderMessage(obj));
+                    errors.add(rule.getError().buildMessage(obj));
                 }
             }
 
@@ -49,6 +66,11 @@ public class Validator<T> {
         return errors != null && errors.isEmpty();
     }
 
+    /**
+     * Validation method
+     *
+     * @return validation result
+     */
     public boolean validate() {
         if (errors != null) {
             return isValid();
@@ -62,7 +84,23 @@ public class Validator<T> {
         return isValid();
     }
 
+    /**
+     * @return list of errors
+     *
+     * @throws IllegalStateException in case if you didn't call validate method first
+     */
     public List<String> errors() {
+        if (errors == null) {
+            throw new IllegalStateException("You should call \"validate\" first.");
+        }
+
         return errors;
+    }
+
+    /**
+     * @return object, validation target
+     */
+    public T getObj() {
+        return obj;
     }
 }

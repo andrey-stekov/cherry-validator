@@ -3,6 +3,11 @@ package org.andrey.cherry.validator;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * Simple rule bean.
+ *
+ * @param <T> Class that will be validated
+ */
 public class SimpleRule<T> implements IRule<T> {
     private final String name;
     private final Set<String> prerequisites;
